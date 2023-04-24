@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const { Schema } = mongoose;
 
-const LikeSchema = new Schema({
+const CommentSchema = new Schema({
     date: {
         type: Date,
         default: Date.now,
@@ -16,7 +16,11 @@ const LikeSchema = new Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'post',
         require: 'true'
+    },
+    commentText: {
+        type: String,
+        require: true
     }
 })
 
-module.exports = mongoose.model('like', LikeSchema)
+module.exports = mongoose.model('comment', CommentSchema)

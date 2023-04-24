@@ -4,19 +4,22 @@ const env = process.env;
 
 const jwtSecret = env.JWT_SECRET_USER;
 
-const fetchUser = (req, res, next) => {
+const fetchUser = async (req, res, next) => {
 
-    const token = req.header('auth-token');
-    if (!token) {
-        res.json({ "error": "Please authenticate using a valid token" });
-    }
     try {
+
+        const token = req.header('auth-token');
+
+        if (!token) {
+            res.send({ "error": "Please authenticate using a valid token" });
+        }
+
         const data = jwt.verify(token, jwtSecret);
-        req.user = data.user;
+        req.user = data.userData;
         next();
     } catch (error) {
         console.log(error.message);
-        res.json({ "error": "Something ent wrong" });
+        res.send({ "error": "Something went wrong" });
     }
 
 }

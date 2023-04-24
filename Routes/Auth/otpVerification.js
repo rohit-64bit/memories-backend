@@ -16,6 +16,8 @@ router.post('/create', fetchUser, async (req, res) => {
 
     try {
 
+        console.log(req.user);
+
         const userID = req.user.id
 
         const userVerify = await User.findById(userID)
@@ -23,9 +25,9 @@ router.post('/create', fetchUser, async (req, res) => {
             return res.send({ "error": "no user found" })
         }
 
-        const otpValidate = await Otp.find({ "userID": userID })
+        const otpValidate = await Otp.findOne({ "userID": userID })
 
-        if (!otpValidate) {
+        if (otpValidate) {
             return res.send({ "error": "otp already exists" })
         }
 
@@ -34,15 +36,18 @@ router.post('/create', fetchUser, async (req, res) => {
             "OTP": otp
         })
 
-        data.save()
+        const saveOTP = await data.save()
 
         // send a email to the user with otp
 
-        res.json({ "success": "otp generated" })
+        res.json({
+            "success": true,
+            "message": "otp generated"
+        })
 
     } catch (error) {
-        console.error(error);
-        res.send("Internal Server Error");
+        console.error(error.message);
+        res.send({ error: "Internal Server Error" });
     }
 
 })
@@ -52,21 +57,23 @@ router.post('/verify', fetchUser, async (req, res) => {
     try {
 
         const { otp } = req.body
-        const userID = req.user.id
+
+        const sessionUserID = req.user.id
 
         const otpData = await Otp.findOne({
-            "userID": userID
+            "userID": sessionUserID
         })
 
         if (!otpData) {
-            return res.send({ "error": "Something went wrong try again" })
+            return res.send({ error: "Otp Not Exist !" })
         }
 
-        if (otp === otpData.OTP) {
-            return res.json({ "success": "otp validated !" })
+        if (Number(otp) === otpData.OTP) {
+            return res.json({
+                success: true,
+                message: "otp validated !"
+            })
         }
-
-        res.send({ "error": "Otp validation failed" })
 
     } catch (error) {
         console.log(error.message)

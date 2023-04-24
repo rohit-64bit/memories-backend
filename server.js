@@ -9,7 +9,7 @@ connectToMongo()
 const app = express();
 const port = process.env.PORT || 8888;
 
-app.use(cors({ origin: `${env.CLIENT_URL}` }))
+app.use(cors({ origin: [`${env.CLIENT_URL}`] }))
 
 app.use(express.json())
 
@@ -32,9 +32,13 @@ app.use('/api/follow', require('./Routes/Handler/manageFollow'))
 
 app.use('/api/post', require('./Routes/Handler/managePost'))
 
+app.use('/api/like', require('./Routes/Handler/manageLike'))
+
+app.use('/api/comment', require('./Routes/Handler/manageComment'))
+
 
 app.get('/', (req, res) => {
-    res.send(`visit : ${env.CLIENT_URL}`)
+    res.send(`<a href=${env.CLIENT_URL}> Visit Site </a>`)
 })
 
 app.listen(port, () => {

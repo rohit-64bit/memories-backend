@@ -15,7 +15,7 @@ router.post('/follow-unfollow', fetchUser, async (req, res) => {
         const validateBlackList = await BlackList.findOne({ "userID": sessionUserID })
 
         if (validateBlackList) {
-            res.send({ "error": "User is blacklisted" })
+            return res.send({ "error": "User is blacklisted" })
         }
 
         const validateFollow = await Follow.findOne({
@@ -56,23 +56,25 @@ router.post('/follow-unfollow', fetchUser, async (req, res) => {
 })
 
 router.post('/fetch-follow-status', fetchUser, async (req, res) => {
+
     try {
 
         const sessionUserID = req.user.id;
-        const { following } = req.body;
+        const { followingUserID } = req.body;
 
-        const followStatus = await Follow.findOne({ "userID": sessionUserID, "following": following });
+        const followStatus = await Follow.findOne({ "userID": sessionUserID, "following": followingUserID });
 
         if (followStatus != null) {
-            res.send({ "success": true, "message": "Unfollow" })
+            return res.send({ "success": true, "message": "Unfollow", "followingStatus": true })
         }
 
-        res.send({ "success": true, "message": "Follow" })
+        res.send({ "success": true, "message": "Follow", "followingStatus": false })
 
     } catch (error) {
         console.log(error.message);
         res.send({ "error": "Internal Server Error" })
     }
+    
 })
 
 router.post('/fetch-followers', fetchUser, async (req, res) => {

@@ -5,6 +5,8 @@ const User = require("../../Models/User")
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const fetchUser = require('../../Middleware/fetchUser');
+const Otp = require('../../Models/Otp');
+const otpGenerator = require('otp-generator')
 
 require('dotenv').config()
 const env = process.env;
@@ -17,7 +19,13 @@ router.post('/createuser', [
     body('password', 'Password must be atleast 8 characters').isLength({ min: 8 })
 ], async (req, res) => {
 
-    const { email, userName, name, gender, DOB } = req.body;
+    const otp = otpGenerator.generate(6, {
+        upperCaseAlphabets: false,
+        specialChars: false,
+        lowerCaseAlphabets: false
+    });
+
+    const { email, userName, name, password } = req.body;
 
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -29,20 +37,20 @@ router.post('/createuser', [
         let user = await User.findOne({ email: req.body.email });
 
         if (user) {
-            return res.send({ "errorUserExists": 'Sorry A user already exists login insted' })
+            return res.send({ "error": 'Sorry A user already exists login insted' })
         }
 
         let userNameVerification = await User.findOne({ userName: req.body.userName });
 
         if (userNameVerification) {
-            return res.send({ "errorUserNameExists": 'Sorry A user already exists with this name' })
+            return res.send({ "error": 'Sorry user name exists' })
         }
 
         const salt = await bcrypt.genSalt(10)
-        const secPass = await bcrypt.hash(req.body.password, salt);
+        const secPass = await bcrypt.hash(password, salt);
 
         const userData = await User.create({
-            email: req.body.email,
+            email: email,
             password: secPass,
             name: name,
             userName: userName
@@ -55,6 +63,19 @@ router.post('/createuser', [
         }
 
         const authToken = jwt.sign(data, jwtSecret);
+
+        const otpValidate = await Otp.find({ "userID": data.userData.id })
+
+        if (!otpValidate) {
+            return res.send({ "error": "otp already exists" })
+        }
+
+        const generateOTP = Otp({
+            "userID": data.userData.id,
+            "OTP": otp
+        })
+
+        generateOTP.save()
 
         // send a welcome email to the user
 
@@ -86,21 +107,21 @@ router.post('/authuser', [
 
     try {
 
-        let user = await User.findOne({ email: email })
+        let userData = await User.findOne({ email: email })
 
-        if (!user) {
+        if (!userData) {
             return res.send({ "error": "invalid credentials" })
         }
 
-        const passCompare = await bcrypt.compare(password, user.password)
+        const passCompare = await bcrypt.compare(password, userData.password)
 
         if (!passCompare) {
             return res.send({ "error": "invalid credentials" })
         }
 
         const data = {
-            user: {
-                id: user.id
+            userData: {
+                id: userData.id
             }
         }
 
@@ -135,7 +156,7 @@ router.post('/change-password', fetchUser, async (req, res) => {
         const passCompare = await bcrypt.compare(password, userVerification.password)
 
         if (!passCompare) {
-            return res.send({ "error": "Invalid Credentials" })
+            return res.send({ "error": "Invalid Current Password" })
         }
 
         const salt = await bcrypt.genSalt(10)

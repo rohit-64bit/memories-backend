@@ -15,6 +15,11 @@ const VerificationSchema = new Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'user',
         require: 'true'
+    },
+    verificationText: {
+        type: String,
+        require: true,
+        default: "user"
     }
 })
 

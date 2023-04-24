@@ -9,8 +9,6 @@ router.post('/get-user-profile', fetchUser, async (req, res) => {
 
         const userID = req.user.id
 
-        console.log(userID);
-
         const user = await User.findById(userID).select("-password")
 
         res.send(user);
@@ -22,11 +20,11 @@ router.post('/get-user-profile', fetchUser, async (req, res) => {
 
 })
 
-router.put('/edit-user-profile/:id', fetchUser, async (req, res) => {
+router.put('/edit-user-profile', fetchUser, async (req, res) => {
 
     const { name, userName, bio, gender, DOB, profileURL } = req.body;
 
-    const userID = req.params.id
+    const userID = req.user.id
 
     try {
 
@@ -41,17 +39,53 @@ router.put('/edit-user-profile/:id', fetchUser, async (req, res) => {
 
         let userVerification = await User.findById(userID);
         if (!userVerification) {
-            return res.send("User Not Found")
+            return res.send({ "error": "User Not Found" })
         }
+
+        if (userName !== userVerification.userName) {
+
+            const validateUserName = await User.findOne({ "userName": userName })
+
+            if (validateUserName) {
+                return res.send({ "error": "Username Taken" })
+            }
+
+        }
+
 
         const user = await User.findByIdAndUpdate(userID, { $set: newUser }, { new: true })
 
-        res.json({ newUser })
+        res.send({ success: true, message: "Profile Updated" })
 
     } catch (error) {
 
         console.log(error.message);
-        res.sendStatus(500).json("Internal Server Error")
+        res.send({ error: "Internal Server Error" })
+
+    }
+
+})
+
+router.post('/get-profile-of/:userID', fetchUser, async (req, res) => {
+
+    try {
+        const { userID } = req.params;
+
+        const userProfile = await User.findOne({ "_id": userID }).select("-password")
+
+        if (!userProfile) {
+            res.send({ "error": "User Not Found" })
+        }
+
+        res.send({
+            userProfile,
+            "success": true
+        })
+
+    } catch (error) {
+
+        console.log(error.message);
+        res.send("Internal Server Error")
 
     }
 

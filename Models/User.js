@@ -17,12 +17,12 @@ const UserSchema = new Schema({
         required: true,
         unique: true
     },
-    bio: {
-        type: String
-    },
     name: {
         type: String,
         required: true
+    },
+    bio: {
+        type: String
     },
     gender: {
         type: String
@@ -36,6 +36,10 @@ const UserSchema = new Schema({
     signupDate: {
         type: Date,
         default: Date.now
+    },
+    isPartner: {
+        type: Boolean,
+        default: false
     }
 })
 

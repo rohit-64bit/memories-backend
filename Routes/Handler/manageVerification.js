@@ -3,14 +3,17 @@ const router = express.Router();
 const fetchAdmin = require('../../Middleware/fetchAdmin');
 const Verification = require('../../Models/Verification');
 const fetchUser = require('../../Middleware/fetchUser');
+const User = require('../../Models/User');
 
 router.post('/manage-verification', fetchAdmin, async (req, res) => {
 
     try {
 
-        const { userID, verificationType } = req.body;
+        const { userID, verificationType, isPartner } = req.body;
 
         const verificationValidate = await Verification.findOne({ "userID": userID })
+
+        const user = await User.findById(userID)
 
         const verificationID = verificationValidate._id
 
@@ -23,6 +26,12 @@ router.post('/manage-verification', fetchAdmin, async (req, res) => {
 
             const newVerification = await data.save()
 
+            const updateUserPartnerStatus = User({
+                "isPartner": true
+            })
+
+            const updateStatus = await updateUserPartnerStatus.save()
+
             return res.send({ "success": "User has given a badge" })
 
         }
@@ -31,6 +40,10 @@ router.post('/manage-verification', fetchAdmin, async (req, res) => {
 
         if (verificationType) {
             newData.verificationType = verificationType
+        }
+
+        if (isPartner) {
+            newData.isPartner = isPartner
         }
 
         const editVerification = await Verification.findByIdAndUpdate(verificationID, { $set: newData }, { new: true })
