@@ -40,6 +40,14 @@ const UserSchema = new Schema({
     isPartner: {
         type: Boolean,
         default: false
+    },
+    isAuth: {
+        type: Boolean,
+        default: false
+    },
+    isBanned: {
+        type: Boolean,
+        default: false
     }
 })
 

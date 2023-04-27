@@ -119,6 +119,10 @@ router.post('/authuser', [
             return res.send({ "error": "invalid credentials" })
         }
 
+        if (userData.isBanned) {
+            return res.send({ "error": "ID Restricted" })
+        }
+
         const data = {
             userData: {
                 id: userData.id

@@ -74,18 +74,26 @@ router.post('/fetch-follow-status', fetchUser, async (req, res) => {
         console.log(error.message);
         res.send({ "error": "Internal Server Error" })
     }
-    
+
 })
 
-router.post('/fetch-followers', fetchUser, async (req, res) => {
+router.post('/fetch-followers/:page', fetchUser, async (req, res) => {
 
     try {
 
-        const { UserID } = req.body;
+        const { userID } = req.body;
 
-        const userFollowers = await Follow.find({ "following": UserID }).sort({ _id: -1 });
+        const page = Number(req.params.page);
 
-        res.json(userFollowers)
+        const limit = 5;
+
+        const offset = (page - 1) * limit;
+
+        const userFollowers = await Follow.find({ "following": userID }).sort({ _id: -1 }).skip(offset).limit(limit);
+
+        const userFollowersTotal = await Follow.find({ "following": userID });
+
+        res.json({ "userFollowers": userFollowers, "userFollowersTotal": userFollowersTotal.length })
 
     } catch (error) {
         console.log(error.message);
@@ -94,14 +102,22 @@ router.post('/fetch-followers', fetchUser, async (req, res) => {
 
 })
 
-router.post('/fetch-following', fetchUser, async (req, res) => {
+router.post('/fetch-following/:page', fetchUser, async (req, res) => {
     try {
 
-        const { UserID } = req.body;
+        const { userID } = req.body;
 
-        const userFollowing = await Follow.find({ "userID": UserID }).sort({ _id: -1 });
+        const page = Number(req.params.page);
 
-        res.json(userFollowing)
+        const limit = 5;
+
+        const offset = (page - 1) * limit;
+
+        const userFollowing = await Follow.find({ "userID": userID }).sort({ _id: -1 }).skip(offset).limit(limit);
+
+        const userFollowingTotal = await Follow.find({ "userID": userID }).sort({ _id: -1 });
+
+        res.json({ "userFollowing": userFollowing, "userFollowingTotal": userFollowingTotal.length })
 
     } catch (error) {
         console.log(error.message);

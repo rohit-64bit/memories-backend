@@ -36,6 +36,8 @@ app.use('/api/like', require('./Routes/Handler/manageLike'))
 
 app.use('/api/comment', require('./Routes/Handler/manageComment'))
 
+app.use('/api/search', require('./Routes/Handler/manageSearch'))
+
 
 app.get('/', (req, res) => {
     res.send(`<a href=${env.CLIENT_URL}> Visit Site </a>`)

@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const VerificationSchema = new Schema({
+
     date: {
         type: Date,
         default: Date.now
@@ -17,10 +18,9 @@ const VerificationSchema = new Schema({
         require: 'true'
     },
     verificationText: {
-        type: String,
-        require: true,
-        default: "user"
+        type: String
     }
+
 })
 
 module.exports = mongoose.model('verification', VerificationSchema)
