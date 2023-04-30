@@ -200,7 +200,7 @@ router.post('/authuser', [
 
         if (!userData.isAuth) {
 
-            const otpValidate = await Otp.findOne({ "userID": data.userData.id })
+            const otpValidate = await Otp.findOne({ "userID": data.userData.id, "type": "auth" })
 
             if (otpValidate) {
                 return res.send({ "error": "OTP already exists" })
