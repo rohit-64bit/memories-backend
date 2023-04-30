@@ -11,10 +11,18 @@ const OtpSchema = new Schema({
     OTP: {
         type: Number
     },
+    type: {
+        type: String,
+        require: true
+    },
+    verifiedStatus: {
+        type: Boolean,
+        default: false
+    },
     createdAt: {
         type: Date,
         default: Date.now,
-        index: { expires: 180 }
+        index: { expires: 300 }
     }
 })
 

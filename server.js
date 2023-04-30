@@ -13,6 +13,12 @@ app.use(cors({ origin: [`${env.CLIENT_URL}`] }))
 
 app.use(express.json())
 
+// apis used for analytics and health
+
+app.use('/api/health', require('./Routes/Analytics/manageHealth'))
+
+// ----------------------------------
+
 
 app.use('/api/auth/user', require('./Routes/Auth/userAuth'))
 
@@ -37,6 +43,8 @@ app.use('/api/like', require('./Routes/Handler/manageLike'))
 app.use('/api/comment', require('./Routes/Handler/manageComment'))
 
 app.use('/api/search', require('./Routes/Handler/manageSearch'))
+
+app.use('/api/report', require('./Routes/Handler/manageReport'))
 
 
 app.get('/', (req, res) => {
