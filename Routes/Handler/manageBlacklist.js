@@ -4,6 +4,7 @@ const fetchAdmin = require('../../Middleware/fetchAdmin');
 const User = require('../../Models/User');
 const BlackList = require('../../Models/BlackList');
 const fetchUser = require('../../Middleware/fetchUser');
+const Notification = require('../../Models/Notification');
 
 router.post('/add-to-blacklist', fetchAdmin, async (req, res) => {
 
@@ -22,6 +23,16 @@ router.post('/add-to-blacklist', fetchAdmin, async (req, res) => {
         })
 
         const blackListUser = await data.save()
+
+        const notification = Notification({
+
+            "interaction": false,
+            "userID": userID,
+            "notificationText": "You are temporarily banned by the admins for 5 hours."
+
+        })
+
+        await notification.save()
 
         res.send({
             "success": true,
@@ -49,7 +60,7 @@ router.post('/admin/fetch-blacklist', fetchAdmin, async (req, res) => {
 
         res.send({
             "success": true,
-            "message":"User is Blacklisted"
+            "message": "User is Blacklisted"
         })
 
     } catch (error) {
@@ -73,7 +84,7 @@ router.post('/user/fetch-blacklist', fetchUser, async (req, res) => {
 
         res.send({
             "success": true,
-            "message":"User is Blacklisted"
+            "message": "User is Blacklisted"
         })
 
     } catch (error) {

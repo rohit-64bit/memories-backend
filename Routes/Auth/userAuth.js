@@ -10,6 +10,7 @@ const otpGenerator = require('otp-generator')
 
 const nodemailer = require('nodemailer')
 
+
 require('dotenv').config()
 const env = process.env;
 
@@ -93,7 +94,7 @@ router.post('/createuser', [
             {
                 from: env.MAIL,
                 to: email,
-                subject: `Hey ${name} verify your Email`,
+                subject: `Hey ${name} Welcome 👋`,
                 html: `<html>
                 <head>
                 <meta charset="UTF-8">
@@ -113,7 +114,7 @@ width:100%;
                 <body>
                 <table style="width: 100%; max-width: 600px; margin: 0 auto;">
 <tr>
-<td style="background-color: #000000; color: #ffffff; font-size: 2rem; font-weight: bold; padding: 2rem; text-align: center;">hey! ${name} welcome</td>
+<td style="background-color: #000000; color: #ffffff; font-size: 2rem; font-weight: bold; padding: 2rem; text-align: center;">Hey! ${name} welcome 👋</td>
 </tr>
 <tr>
 <td style="padding: 2rem;">
@@ -246,7 +247,7 @@ router.post('/authuser', [
                     <body>
                     <table style="width: 100%; max-width: 600px; margin: 0 auto;">
   <tr>
-    <td style="background-color: #000000; color: #ffffff; font-size: 2rem; font-weight: bold; padding: 2rem; text-align: center;">hey! ${userData.name} welcome</td>
+    <td style="background-color: #000000; color: #ffffff; font-size: 2rem; font-weight: bold; padding: 2rem; text-align: center;">hey! ${userData.name} verify your email</td>
   </tr>
   <tr>
     <td style="padding: 2rem;">
@@ -346,7 +347,7 @@ width:100%;
                 <body>
                 <table style="width: 100%; max-width: 600px; margin: 0 auto;">
 <tr>
-<td style="background-color: #000000; color: #ffffff; font-size: 2rem; font-weight: bold; padding: 2rem; text-align: center;">hey! ${userVerification.name} welcome</td>
+<td style="background-color: #000000; color: #ffffff; font-size: 2rem; font-weight: bold; padding: 2rem; text-align: center;">hey! ${userVerification.name} </td>
 </tr>
 <tr>
 <td style="padding: 2rem;">

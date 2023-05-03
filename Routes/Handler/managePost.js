@@ -88,7 +88,8 @@ router.post('/fetch-all-post-user/:page', fetchUser, async (req, res) => {
         const offset = (page - 1) * limit;
 
         const today = new Date();
-        const daysAgo = new Date(today.getTime() - (5 * 24 * 60 * 60 * 1000));
+
+        const daysAgo = new Date(today.getTime() - (3 * 24 * 60 * 60 * 1000));
 
         // const allPost = await Post.find({ "postType": "public", date: { $gte: daysAgo } }).sort({ engagementScore: -1, date: -1 }).skip(offset).limit(limit).exec()
         const allPost = await Post.find({ "postType": "public" }).sort({ date: -1 }).skip(offset).limit(limit).exec()

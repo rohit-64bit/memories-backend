@@ -5,6 +5,7 @@ const BlackList = require('../../Models/BlackList');
 const Like = require('../../Models/Like');
 const fetchAdmin = require('../../Middleware/fetchAdmin');
 const Post = require('../../Models/Post');
+const Notification = require('../../Models/Notification');
 
 router.post('/like-dislike', fetchUser, async (req, res) => {
 
@@ -60,6 +61,17 @@ router.post('/like-dislike', fetchUser, async (req, res) => {
         postData.engagementScore = postData.engagementScore + likeScore
 
         await postData.save()
+
+        const notification = Notification({
+
+            "interaction": true,
+            "userID": postData.userID,
+            "userInteracted": sessionUserID,
+            "notificationText": "liked your post."
+
+        })
+
+        await notification.save()
 
         res.send({
             "success": true,

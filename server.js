@@ -46,6 +46,8 @@ app.use('/api/search', require('./Routes/Handler/manageSearch'))
 
 app.use('/api/report', require('./Routes/Handler/manageReport'))
 
+app.use('/api/notification', require('./Routes/Handler/manageNotification'))
+
 
 app.get('/', (req, res) => {
     res.send(`<a href=${env.CLIENT_URL}> Visit Site </a>`)

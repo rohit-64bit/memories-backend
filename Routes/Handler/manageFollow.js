@@ -3,6 +3,7 @@ const router = express.Router();
 const fetchUser = require('../../Middleware/fetchUser');
 const Follow = require('../../Models/Follow');
 const BlackList = require('../../Models/BlackList');
+const Notification = require('../../Models/Notification');
 
 
 router.post('/follow-unfollow', fetchUser, async (req, res) => {
@@ -10,12 +11,13 @@ router.post('/follow-unfollow', fetchUser, async (req, res) => {
     try {
 
         const sessionUserID = req.user.id;
+
         const { following } = req.body;
 
         const validateBlackList = await BlackList.findOne({ "userID": sessionUserID })
 
         if (validateBlackList) {
-            return res.send({ "error": "User is blacklisted" })
+            return res.send({ "error": "Temporarily Banned" })
         }
 
         const validateFollow = await Follow.findOne({
@@ -40,7 +42,18 @@ router.post('/follow-unfollow', fetchUser, async (req, res) => {
             "following": following
         })
 
-        const follow = await data.save()
+        await data.save()
+
+        const notification = Notification({
+
+            "interaction": true,
+            "userID": following,
+            "userInteracted": sessionUserID,
+            "notificationText": "started following you."
+
+        })
+
+        await notification.save()
 
         res.send({
             "success": true,

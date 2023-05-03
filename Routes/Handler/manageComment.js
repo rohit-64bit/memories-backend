@@ -5,6 +5,7 @@ const BlackList = require('../../Models/BlackList');
 const fetchAdmin = require('../../Middleware/fetchAdmin');
 const Comment = require('../../Models/Comment');
 const Post = require('../../Models/Post');
+const Notification = require('../../Models/Notification');
 
 
 router.post('/create', fetchUser, async (req, res) => {
@@ -19,7 +20,7 @@ router.post('/create', fetchUser, async (req, res) => {
         const validateBlackList = await BlackList.findOne({ "userID": sessionUserID })
 
         if (validateBlackList) {
-            return res.send({ "error": "User is blacklisted" })
+            return res.send({ "error": "Temporarily Banned" })
         }
 
         const postData = await Post.findOne({ "_id": postID }).exec()
@@ -35,6 +36,17 @@ router.post('/create', fetchUser, async (req, res) => {
         })
 
         await data.save()
+
+        const notification = Notification({
+
+            "interaction": true,
+            "userID": postData.userID,
+            "userInteracted": sessionUserID,
+            "notificationText": "user liked your post."
+
+        })
+
+        await notification.save()
 
         res.send({
             "success": true,
