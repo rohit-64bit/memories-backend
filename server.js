@@ -9,7 +9,12 @@ connectToMongo()
 const app = express();
 const port = process.env.PORT || 8888;
 
-app.use(cors({ origin: [`${env.CLIENT_URL}`, `${env.PERMANENT_CLIENT_URL}`] }))
+const allowedOrigin = [
+    `${env.CLIENT_URL}`,
+    `${env.PERMANENT_CLIENT_URL}`
+]
+
+app.use(cors({ origin: allowedOrigin }))
 
 app.use(express.json())
 
