@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const fetchUser = require('../../Middleware/fetchUser');
 const BlackList = require('../../Models/BlackList');
-const fetchAdmin = require('../../Middleware/fetchAdmin');
 const Comment = require('../../Models/Comment');
 const Post = require('../../Models/Post');
 const Notification = require('../../Models/Notification');
@@ -42,7 +41,7 @@ router.post('/create', fetchUser, async (req, res) => {
             "interaction": true,
             "userID": postData.userID,
             "userInteracted": sessionUserID,
-            "notificationText": "user liked your post."
+            "notificationText": "commented on your post."
 
         })
 
