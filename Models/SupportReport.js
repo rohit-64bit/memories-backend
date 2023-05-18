@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
-const ReportSchema = new Schema({
+const SupportSchema = new Schema({
     ReporterID: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'user',
@@ -11,15 +11,12 @@ const ReportSchema = new Schema({
         type: Date,
         default: Date.now
     },
-    postID: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'post',
-        require: 'true'
+    subject: {
+        type: String
     },
-    reportText: {
-        type: String,
-        require: 'true'
+    description: {
+        type: String
     }
 })
 
-module.exports = mongoose.model('report', ReportSchema)
+module.exports = mongoose.model('support', SupportSchema)

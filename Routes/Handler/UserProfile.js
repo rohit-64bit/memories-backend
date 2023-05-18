@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const User = require('../../Models/User');
 const fetchUser = require('../../Middleware/fetchUser');
+const Verification = require('../../Models/Verification');
 
 router.post('/get-user-profile', fetchUser, async (req, res) => {
 
@@ -9,9 +10,17 @@ router.post('/get-user-profile', fetchUser, async (req, res) => {
 
         const userID = req.user.id
 
-        const user = await User.findById(userID).select("-password")
+        const user = await User.findById(userID)
 
-        res.send(user);
+        if (user.isPartner) {
+
+            const partner = await Verification.findOne({ "userID": userID })
+
+            return res.send({ user, partner })
+
+        }
+
+        res.send({ user })
 
     } catch (error) {
         console.error(error.message);

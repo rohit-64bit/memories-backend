@@ -21,6 +21,7 @@ app.use(express.json())
 // apis used for analytics and health
 
 app.use('/api/health', require('./Routes/Analytics/manageHealth'))
+app.use('/api/analytics', require('./Routes/Analytics/manageAnalytics'))
 
 // ----------------------------------
 
@@ -37,8 +38,6 @@ app.use('/api/user', require('./Routes/Handler/UserProfile'))
 
 app.use('/api/verification', require('./Routes/Handler/manageVerification'))
 
-app.use('/api/blacklist', require('./Routes/Handler/manageBlacklist'))
-
 app.use('/api/follow', require('./Routes/Handler/manageFollow'))
 
 app.use('/api/post', require('./Routes/Handler/managePost'))
@@ -52,6 +51,17 @@ app.use('/api/search', require('./Routes/Handler/manageSearch'))
 app.use('/api/report', require('./Routes/Handler/manageReport'))
 
 app.use('/api/notification', require('./Routes/Handler/manageNotification'))
+
+app.use('/api/blacklist', require('./Routes/Handler/admin/manageBlacklist'))
+
+app.use('/api/chat', require('./Routes/Handler/manageChat'))
+
+
+
+// admin routes
+
+app.use('/api/admin/manage-user', require('./Routes/Handler/admin/manageUser'))
+
 
 
 app.get('/', (req, res) => {

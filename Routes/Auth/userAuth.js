@@ -188,7 +188,7 @@ router.post('/authuser', [
         }
 
         if (userData.isBanned) {
-            return res.send({ "error": "ID Restricted" })
+            return res.send({ "error": "You are Permanently Banned" })
         }
 
         const data = {

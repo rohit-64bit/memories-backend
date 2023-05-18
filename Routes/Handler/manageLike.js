@@ -6,6 +6,7 @@ const Like = require('../../Models/Like');
 const fetchAdmin = require('../../Middleware/fetchAdmin');
 const Post = require('../../Models/Post');
 const Notification = require('../../Models/Notification');
+const User = require('../../Models/User');
 
 router.post('/like-dislike', fetchUser, async (req, res) => {
 
@@ -18,10 +19,16 @@ router.post('/like-dislike', fetchUser, async (req, res) => {
 
         const { postID } = req.body
 
+        const validateUserBan = await User.findById(sessionUserID)
+
+        if (validateUserBan.isBanned) {
+            return res.send({ "error": "You are Permanently Banned" })
+        }
+
         const validateBlackList = await BlackList.findOne({ "userID": sessionUserID })
 
         if (validateBlackList) {
-            return res.send({ "error": "User is blacklisted" })
+            return res.send({ "error": "You are blacklisted" })
         }
 
         const validateLike = await Like.findOne({

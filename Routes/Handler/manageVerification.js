@@ -4,6 +4,55 @@ const fetchAdmin = require('../../Middleware/fetchAdmin');
 const Verification = require('../../Models/Verification');
 const fetchUser = require('../../Middleware/fetchUser');
 const User = require('../../Models/User');
+const Partner = require('../../Models/Partner');
+
+router.post('/apply', fetchUser, async (req, res) => {
+
+    try {
+
+        const payload = req.body
+
+        const validatePartner = await Partner.findOne({ userID: payload.userID })
+
+        if (validatePartner) {
+            return res.send({ "error": "You have already applied" })
+        }
+
+        const data = Partner(payload)
+
+        await data.save()
+
+        res.send({ "success": true, "message": "Application Submited" })
+
+    } catch (error) {
+
+        console.log(error.message)
+        res.send({ error: "Internal Server Error" })
+
+    }
+
+})
+
+router.post('/fetch-status', fetchUser, async (req, res) => {
+
+    try {
+
+        const sessionUserID = req.user.id
+
+        const validatePartner = await Partner.findOne({ userID: sessionUserID })
+
+        if (!validatePartner) {
+            return res.send({ "notFound": true })
+        }
+
+        res.send(validatePartner)
+
+    } catch (error) {
+        console.log(error.message)
+        res.send({ error: "Internal Server Error" })
+    }
+
+})
 
 router.post('/manage-verification', fetchAdmin, async (req, res) => {
 

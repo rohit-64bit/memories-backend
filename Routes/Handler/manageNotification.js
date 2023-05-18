@@ -26,7 +26,7 @@ router.post('/fetch-notification/:page', fetchUser, async (req, res) => {
 
 
     } catch (error) {
-        console.log(error)
+        console.log(error.message)
         res.send({ "error": "Internal Server Error" })
     }
 

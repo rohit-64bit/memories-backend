@@ -1,15 +1,14 @@
 const express = require('express');
 const router = express.Router();
 
-router.post('/check', async (req, res) => {
+router.get('/', async (req, res) => {
     try {
-
-        console.log("Server is healthy");
-        res.sendStatus(200).send({ success: "Server is healthy" })
+        
+        res.status(200).send({ success: "Server is healthy" })
 
     } catch (error) {
         console.log(error)
-        res.sendStatus(500).send({ error: "Internal Server Error" })
+        res.status(500).send({ error: "Internal Server Error" })
     }
 })
 

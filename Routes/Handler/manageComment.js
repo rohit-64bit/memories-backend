@@ -16,10 +16,16 @@ router.post('/create', fetchUser, async (req, res) => {
 
         const commentScore = 7;
 
+        const validateUserBan = await User.findById(sessionUserID)
+
+        if (validateUserBan.isBanned) {
+            return res.send({ "error": "You are Permanently Banned" })
+        }
+
         const validateBlackList = await BlackList.findOne({ "userID": sessionUserID })
 
         if (validateBlackList) {
-            return res.send({ "error": "Temporarily Banned" })
+            return res.send({ "error": "Temporarily Restricted" })
         }
 
         const postData = await Post.findOne({ "_id": postID }).exec()

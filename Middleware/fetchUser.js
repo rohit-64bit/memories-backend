@@ -11,7 +11,7 @@ const fetchUser = async (req, res, next) => {
         const token = req.header('auth-token');
 
         if (!token) {
-            res.send({ "error": "Please authenticate using a valid token" });
+            return res.send({ "error": "Please authenticate using a valid token" });
         }
 
         const data = jwt.verify(token, jwtSecret);

@@ -8,7 +8,7 @@ const fetchAdmin = (req, res, next) => {
 
     const token = req.header('admin-auth-token');
     if (!token) {
-        res.json({ "error": "Please authenticate using a valid token" });
+        return res.json({ "error": "Please authenticate using a valid token" });
     }
     try {
         const data = jwt.verify(token, jwtSecret);

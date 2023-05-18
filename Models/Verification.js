@@ -9,8 +9,7 @@ const VerificationSchema = new Schema({
         default: Date.now
     },
     verificationType: {
-        type: String,
-        default: 'user'
+        type: String
     },
     userID: {
         type: mongoose.Schema.Types.ObjectId,
@@ -18,6 +17,18 @@ const VerificationSchema = new Schema({
         require: 'true'
     },
     verificationText: {
+        type: String
+    },
+    instaLink: {
+        type: String
+    },
+    githubLink: {
+        type: String
+    },
+    discordLink: {
+        type: String
+    },
+    youtubeLink: {
         type: String
     }
 
