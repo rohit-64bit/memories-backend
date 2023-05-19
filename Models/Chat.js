@@ -17,6 +17,13 @@ const ChatSchema = new Schema({
     recentMessage: {
         type: String
     },
+    newMessage: {
+        type: Boolean
+    },
+    newMessageBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'user'
+    },
     updatedAt: {
         type: Date,
         default: Date.now

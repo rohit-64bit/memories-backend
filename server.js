@@ -80,17 +80,17 @@ app.get('/', (req, res) => {
 
 // Socket handlers
 
-// const io = new Server(server, {
-//     cors: {
-//         origin: `${env.CLIENT_URL}`,
-//     }
-// });
-
-const io = require('socket.io')(server, {
+const io = new Server(server, {
     cors: {
         origin: `${env.CLIENT_URL}`,
     }
-})
+});
+
+// const io = require('socket.io')(server, {
+//     cors: {
+//         origin: `${env.CLIENT_URL}`,
+//     }
+// })
 
 io.on("connection", (socket) => {
 
