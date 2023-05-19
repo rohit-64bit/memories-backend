@@ -75,7 +75,7 @@ app.get('/', (req, res) => {
 })
 
 app.listen(port, () => {
-    console.log(`Backend running at {port} port`);
+    console.log(`Backend running at ${port} port`);
 })
 
 // Socket handlers
@@ -89,10 +89,12 @@ const io = new Server(server, {
 
 io.on("connection", (socket) => {
 
-    socket.on("setup", (userData) => {
-        socket.join(userData._id)
+    socket.on("setup", (user) => {
 
-        socket.emit("connected")
+        socket.join(user._id)
+
+        io.emit("connected")
+
     })
 
     socket.on("join-chat", (room) => {
@@ -100,14 +102,14 @@ io.on("connection", (socket) => {
     })
 
     socket.on('typing', (room) => {
-        socket.in(room).emit('typing')
+        io.in(room).emit('typing')
     })
 
     socket.on('stop-typing', (room) => {
-        socket.in(room).emit('stop-typing')
+        io.in(room).emit('stop-typing')
     })
 
-    socket.on('new-message', (payload) => {
+    socket.on('message', (payload) => {
 
         const roomID = payload.chatID
 
@@ -115,7 +117,7 @@ io.on("connection", (socket) => {
             return console.log("ChatID badly formated")
         }
 
-        socket.in(room).emit('message-received', payload)
+        io.in(roomID).emit('message', payload)
 
     })
 
