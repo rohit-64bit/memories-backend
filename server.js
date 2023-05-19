@@ -11,7 +11,7 @@ connectToMongo()
 const app = express();
 const port = process.env.PORT || 8888;
 
-const socketPort = process.env.PORT || 9000;
+const socketPort = 9000;
 
 const server = require('http').createServer(app);
 
@@ -75,7 +75,7 @@ app.get('/', (req, res) => {
 })
 
 app.listen(port, () => {
-    console.log(`Backend running at http://localhost:${port}`);
+    console.log(`Backend running at {port} port`);
 })
 
 // Socket handlers
