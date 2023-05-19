@@ -4,10 +4,16 @@ const cors = require('cors')
 require('dotenv').config()
 const env = process.env;
 
+const { Server } = require('socket.io');
+
 connectToMongo()
 
 const app = express();
 const port = process.env.PORT || 8888;
+
+const socketPort = process.env.PORT || 9000;
+
+const server = require('http').createServer(app);
 
 const allowedOrigin = [
     `${env.CLIENT_URL}`,
@@ -70,4 +76,53 @@ app.get('/', (req, res) => {
 
 app.listen(port, () => {
     console.log(`Backend running at http://localhost:${port}`);
+})
+
+// Socket handlers
+
+const io = new Server(server, {
+    pingTimeout: 10000,
+    cors: {
+        origin: `${env.CLIENT_URL}`,
+    }
+});
+
+io.on("connection", (socket) => {
+
+    socket.on("setup", (userData) => {
+        socket.join(userData._id)
+
+        socket.emit("connected")
+    })
+
+    socket.on("join-chat", (room) => {
+        socket.join(room)
+    })
+
+    socket.on('typing', (room) => {
+        socket.in(room).emit('typing')
+    })
+
+    socket.on('stop-typing', (room) => {
+        socket.in(room).emit('stop-typing')
+    })
+
+    socket.on('new-message', (payload) => {
+
+        const roomID = payload.chatID
+
+        if (!roomID) {
+            return console.log("ChatID badly formated")
+        }
+
+        socket.in(room).emit('message-received', payload)
+
+    })
+
+})
+
+server.listen(socketPort, () => {
+
+    console.log(`IO server running at ${socketPort} port`);
+
 })
