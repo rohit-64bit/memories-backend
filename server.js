@@ -74,9 +74,9 @@ app.get('/', (req, res) => {
     res.send(`<a href=${env.CLIENT_URL}> Visit Site </a>`)
 })
 
-app.listen(port, () => {
-    console.log(`Backend running at ${port} port`);
-})
+// app.listen(port, () => {
+//     console.log(`Backend running at ${port} port`);
+// })
 
 // Socket handlers
 
@@ -123,8 +123,8 @@ io.on("connection", (socket) => {
 
 })
 
-server.listen(socketPort, () => {
+server.listen(port, () => {
 
-    console.log(`IO server running at ${socketPort} port`);
+    console.log(`IO & API Server running at ${port} port`);
 
 })
