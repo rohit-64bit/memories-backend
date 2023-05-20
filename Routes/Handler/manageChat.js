@@ -108,7 +108,7 @@ router.post('/fetch-message', fetchUser, async (req, res) => {
             return res.send({ error: "404 Chat not found" })
         }
 
-        if (validateChat.newMessageBy !== sessionUserID) {
+        if (validateChat.newMessageBy != sessionUserID) {
 
             validateChat.newMessage = false
 
