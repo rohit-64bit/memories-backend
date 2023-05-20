@@ -77,8 +77,10 @@ router.post('/send-message', fetchUser, async (req, res) => {
 
         await payload.save()
 
-        validateChat.recentMessage = message
-        validateChat.updatedAt = Date.now()
+        validateChat.recentMessage = message;
+        validateChat.updatedAt = Date.now();
+        validateChat.newMessageBy = senderID;
+        validateChat.newMessage = true;
 
         await validateChat.save()
 
@@ -98,10 +100,20 @@ router.post('/fetch-message', fetchUser, async (req, res) => {
 
         const { chatID } = req.body;
 
+        const sessionUserID = req.user.id
+
         const validateChat = await Chat.findById(chatID)
 
         if (!validateChat) {
             return res.send({ error: "404 Chat not found" })
+        }
+
+        if (validateChat.newMessageBy !== sessionUserID) {
+
+            validateChat.newMessage = false
+
+            await validateChat.save()
+
         }
 
         const message = await Message.find({ chatID: chatID })

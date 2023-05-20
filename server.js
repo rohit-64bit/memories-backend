@@ -86,12 +86,6 @@ const io = new Server(server, {
     }
 });
 
-// const io = require('socket.io')(server, {
-//     cors: {
-//         origin: `${env.CLIENT_URL}`,
-//     }
-// })
-
 io.on("connection", (socket) => {
 
     socket.on("setup", (user) => {
@@ -106,12 +100,12 @@ io.on("connection", (socket) => {
         socket.join(room)
     })
 
-    socket.on('typing', (room) => {
-        io.in(room).emit('typing')
+    socket.on('typing', ({ room, userID }) => {
+        io.in(room).emit('typing', { room, userID })
     })
 
-    socket.on('stop-typing', (room) => {
-        io.in(room).emit('stop-typing')
+    socket.on('stop-typing', ({ room, userID }) => {
+        io.in(room).emit('stop-typing', { room, userID })
     })
 
     socket.on('message', (payload) => {
@@ -123,6 +117,12 @@ io.on("connection", (socket) => {
         }
 
         io.in(roomID).emit('message', payload)
+
+    })
+
+    socket.on('refresh', ({ room, RefreshuserID }) => {
+
+        io.in(room).emit('refresh', { room, RefreshuserID })
 
     })
 
