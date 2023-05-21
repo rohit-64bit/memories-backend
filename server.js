@@ -92,8 +92,12 @@ io.on("connection", (socket) => {
 
         socket.join(user._id)
 
-        io.emit("connected")
+        io.emit("setup", { userID: user._id })
 
+    })
+
+    socket.on('is-connected', (userID) => {
+        io.emit('is-connected', userID)
     })
 
     socket.on("join-chat", (room) => {
@@ -108,6 +112,14 @@ io.on("connection", (socket) => {
         io.in(room).emit('stop-typing', { room, userID })
     })
 
+    socket.on('user-typing', ({ room, userID }) => {
+        io.emit('user-typing', { room, userID })
+    })
+
+    socket.on('user-stop-typing', ({ room, userID }) => {
+        io.emit('user-stop-typing', { room, userID })
+    })
+
     socket.on('message', (payload) => {
 
         const roomID = payload.chatID
@@ -120,9 +132,9 @@ io.on("connection", (socket) => {
 
     })
 
-    socket.on('refresh', ({ room, RefreshuserID }) => {
+    socket.on('refresh', ({ room, refreshUserID }) => {
 
-        io.in(room).emit('refresh', { room, RefreshuserID })
+        io.emit('refresh', { room, refreshUserID })
 
     })
 

@@ -17,7 +17,7 @@ router.post('/fetch-chat', fetchUser, async (req, res) => {
 
         if (validateChat) {
 
-            return res.send({ success: true, chatID: validateChat._id })
+            return res.send({ success: true, chatData: validateChat })
 
         } else {
 
@@ -27,7 +27,7 @@ router.post('/fetch-chat', fetchUser, async (req, res) => {
 
             const chat = await Chat.findOne({ user: [sessionUserID, userID] })
 
-            res.send({ success: true, chatID: chat._id })
+            res.send({ success: true, chatData: chat })
 
         }
 
