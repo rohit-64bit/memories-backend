@@ -18,7 +18,8 @@ router.post('/search-community/:regex', fetchUser, async (req, res) => {
                 { "name": searchRegex },
                 { "userName": searchRegex }
 
-            ]
+            ],
+            isAuth: true
 
         }).sort({ _id: -1 }).exec()
 
