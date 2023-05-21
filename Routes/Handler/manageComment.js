@@ -5,6 +5,7 @@ const BlackList = require('../../Models/BlackList');
 const Comment = require('../../Models/Comment');
 const Post = require('../../Models/Post');
 const Notification = require('../../Models/Notification');
+const User = require('../../Models/User')
 
 
 router.post('/create', fetchUser, async (req, res) => {
@@ -12,6 +13,7 @@ router.post('/create', fetchUser, async (req, res) => {
     try {
 
         const sessionUserID = req.user.id;
+        
         const { commentText, postID } = req.body;
 
         const commentScore = 7;
