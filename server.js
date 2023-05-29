@@ -68,15 +68,13 @@ app.use('/api/chat', require('./Routes/Handler/manageChat'))
 
 app.use('/api/admin/manage-user', require('./Routes/Handler/admin/manageUser'))
 
+app.use('/api/admin/manage-partner', require('./Routes/Handler/admin/managePartners'))
+
 
 
 app.get('/', (req, res) => {
     res.send(`<a href=${env.CLIENT_URL}> Visit Site </a>`)
 })
-
-// app.listen(port, () => {
-//     console.log(`Backend running at ${port} port`);
-// })
 
 // Socket handlers
 

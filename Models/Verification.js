@@ -11,6 +11,13 @@ const VerificationSchema = new Schema({
     verificationType: {
         type: String
     },
+    isTerminated: {
+        type: Boolean,
+        default: false
+    },
+    terminationReason: {
+        type: String
+    },
     userID: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'user',

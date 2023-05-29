@@ -15,6 +15,10 @@ const PartnerSchema = new Schema({
         type: Boolean,
         default: true
     },
+    isRejected: {
+        type: Boolean,
+        default: true
+    },
     businessName: {
         type: String
     },

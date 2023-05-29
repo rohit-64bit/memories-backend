@@ -48,6 +48,10 @@ const UserSchema = new Schema({
     isBanned: {
         type: Boolean,
         default: false
+    },
+    isBetaUser: {
+        type: Boolean,
+        default: false
     }
 })
 

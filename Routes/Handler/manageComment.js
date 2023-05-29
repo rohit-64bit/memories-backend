@@ -13,7 +13,7 @@ router.post('/create', fetchUser, async (req, res) => {
     try {
 
         const sessionUserID = req.user.id;
-        
+
         const { commentText, postID } = req.body;
 
         const commentScore = 7;
@@ -44,16 +44,18 @@ router.post('/create', fetchUser, async (req, res) => {
 
         await data.save()
 
-        const notification = Notification({
+        if (postData.userID != sessionUserID) {
+            const notification = Notification({
 
-            "interaction": true,
-            "userID": postData.userID,
-            "userInteracted": sessionUserID,
-            "notificationText": "commented on your post."
+                "interaction": true,
+                "userID": postData.userID,
+                "userInteracted": sessionUserID,
+                "notificationText": "commented on your post."
 
-        })
+            })
 
-        await notification.save()
+            await notification.save()
+        }
 
         res.send({
             "success": true,

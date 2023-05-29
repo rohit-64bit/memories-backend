@@ -22,6 +22,16 @@ router.post('/apply', fetchUser, async (req, res) => {
 
         await data.save()
 
+        const notification = Notification({
+
+            "interaction": false,
+            "userID": payload.userID,
+            "notificationText": "Thank you for your interest in our partner program. Your application has been submitted and will be reviewed. We will contact you if necessary."
+
+        })
+
+        await notification.save()
+
         res.send({ "success": true, "message": "Application Submited" })
 
     } catch (error) {
@@ -54,53 +64,71 @@ router.post('/fetch-status', fetchUser, async (req, res) => {
 
 })
 
-router.post('/manage-verification', fetchAdmin, async (req, res) => {
+router.post('/admin/manage-verification', fetchAdmin, async (req, res) => {
 
     try {
 
-        const { userID, verificationType, isPartner } = req.body;
+        const { userID, verificationType, verificationText, isPartner } = req.body;
 
         const verificationValidate = await Verification.findOne({ "userID": userID })
 
+        const application = await Partner.findOne({ "userID": userID })
+
+        if (!application) {
+            return res.send({ error: "404 - application not found" })
+        }
+
         const user = await User.findById(userID)
 
-        const verificationID = verificationValidate._id
+        if (!user) {
+            return res.send({ error: "404 - User Not Found" })
+        }
 
         if (verificationValidate === null) {
 
             const data = Verification({
                 "userID": userID,
-                "verificationType": verificationType
+                "verificationType": verificationType,
+                "verificationText": verificationText
             })
 
-            const newVerification = await data.save()
+            await data.save()
 
-            const updateUserPartnerStatus = User({
-                "isPartner": true
-            })
+            application.pendingStatus = false
 
-            const updateStatus = await updateUserPartnerStatus.save()
+            await application.save()
 
-            return res.send({ "success": "User has given a badge" })
+            user.isPartner = true
 
+            await user.save()
+
+            return res.send({ success: true, message: "User has given a badge" })
+
+        } else {
+
+            const verificationID = verificationValidate._id
+
+            const newData = {}
+
+            if (verificationType) {
+                newData.verificationType = verificationType
+            }
+
+            if (verificationText) {
+                newData.verificationText = verificationText
+            }
+
+            if (isPartner) {
+                newData.isPartner = isPartner
+            }
+
+            const editVerification = await Verification.findByIdAndUpdate(verificationID, { $set: newData }, { new: true })
+
+            res.send({ "success": "Badge Update Success" })
         }
-
-        const newData = {}
-
-        if (verificationType) {
-            newData.verificationType = verificationType
-        }
-
-        if (isPartner) {
-            newData.isPartner = isPartner
-        }
-
-        const editVerification = await Verification.findByIdAndUpdate(verificationID, { $set: newData }, { new: true })
-
-        res.send({ "success": "Badge Update Success" })
 
     } catch (error) {
-        console.log(error.message);
+        console.log(error);
         res.send({ "error": "Internal Server Error" })
     }
 

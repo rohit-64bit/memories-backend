@@ -72,7 +72,7 @@ router.post('/ban-unban-user', fetchAdmin, async (req, res) => {
             return res.send({ "error": "404 - User Not Found" })
         }
 
-        if (Boolean(isPermanentBan && isPermanentBan !== "false" && isPermanentBan === "true")) {
+        if (isPermanentBan) {
 
             if (validateUser.isBanned) {
 
@@ -88,7 +88,7 @@ router.post('/ban-unban-user', fetchAdmin, async (req, res) => {
 
             return res.send({ "success": true, "message": "User Parmanently Banned" })
 
-        } else if (isPermanentBan === "false") {
+        } else if (!isPermanentBan) {
 
             const validateTempBan = await BlackList.findOne({ "userID": userID })
 
@@ -123,5 +123,6 @@ router.post('/ban-unban-user', fetchAdmin, async (req, res) => {
     }
 
 })
+
 
 module.exports = router;

@@ -4,6 +4,7 @@ const fetchAdmin = require('../../Middleware/fetchAdmin');
 const fetchUser = require('../../Middleware/fetchUser');
 const Post = require('../../Models/Post');
 const BlackList = require('../../Models/BlackList');
+const Notification = require('../../Models/Notification');
 
 
 router.post('/create', fetchUser, async (req, res) => {
@@ -179,6 +180,12 @@ router.delete('/user/delete-post/:postID', fetchUser, async (req, res) => {
 
         const postID = req.params.postID;
 
+        const validatePost = await Post.findById(postID)
+
+        if (!validatePost) {
+            return res.send({ error: "Something Went Wrong" })
+        }
+
         const postDelete = await Post.findByIdAndDelete(postID)
 
         res.send({
@@ -199,7 +206,25 @@ router.delete('/admin/delete-post/:postID', fetchAdmin, async (req, res) => {
 
         const postID = req.params.postID;
 
+        const validatePost = await Post.findById(postID)
+
+        if (!validatePost) {
+
+            return res.send({ error: "404 - Post not found" })
+
+        }
+
         const postDelete = await Post.findByIdAndDelete(postID)
+
+        const notification = Notification({
+
+            "interaction": false,
+            "userID": validatePost.userID,
+            "notificationText": "your post has been removed by the admins."
+
+        })
+
+        await notification.save()
 
         res.send({
             "success": true,
@@ -213,13 +238,21 @@ router.delete('/admin/delete-post/:postID', fetchAdmin, async (req, res) => {
 
 })
 
-router.post('/fetch-all-post-admin', fetchAdmin, async (req, res) => {
+router.post('/admin/fetch-all-post-admin/:page', fetchAdmin, async (req, res) => {
 
     try {
 
-        const allPost = await Post.find().sort({ _id: -1 })
+        const page = Number(req.params.page);
 
-        res.json(allPost)
+        const limit = 6;
+
+        const offset = (page - 1) * limit;
+
+        const allPost = await Post.find().sort({ date: -1 }).skip(offset).limit(limit).exec()
+
+        const allPostLength = await Post.find().exec()
+
+        res.send({ post: allPost, postLength: allPostLength.length })
 
     } catch (error) {
         console.log(error.message);

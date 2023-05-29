@@ -65,6 +65,19 @@ router.post('/like-dislike', fetchUser, async (req, res) => {
 
         const postData = await Post.findOne({ "_id": postID }).exec()
 
+        if (postData.userID != sessionUserID) {
+            const notification = Notification({
+
+                "interaction": true,
+                "userID": postData.userID,
+                "userInteracted": sessionUserID,
+                "notificationText": "commented on your post."
+
+            })
+
+            await notification.save()
+        }
+
         postData.engagementScore = postData.engagementScore + likeScore
 
         await postData.save()

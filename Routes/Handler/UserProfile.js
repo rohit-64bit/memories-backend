@@ -86,6 +86,14 @@ router.post('/get-profile-of/:userID', fetchUser, async (req, res) => {
             res.send({ "error": "User Not Found" })
         }
 
+        if (userProfile.isPartner) {
+
+            const partner = await Verification.findOne({ "userID": userID })
+
+            return res.send({ userProfile, partner, "success": true })
+
+        }
+
         res.send({
             userProfile,
             "success": true
