@@ -5,6 +5,7 @@ const Verification = require('../../Models/Verification');
 const fetchUser = require('../../Middleware/fetchUser');
 const User = require('../../Models/User');
 const Partner = require('../../Models/Partner');
+const Notification = require('../../Models/Notification');
 
 router.post('/apply', fetchUser, async (req, res) => {
 

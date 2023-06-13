@@ -13,7 +13,16 @@ router.post('/fetch-chat', fetchUser, async (req, res) => {
 
         const { userID } = req.body;
 
-        const validateChat = await Chat.findOne({ user: [sessionUserID, userID] })
+        const validateChat = await Chat.findOne({
+            $and: [
+                {
+                    $or: [
+                        { user: { $all: [sessionUserID, userID] } },
+                        { user: { $all: [userID, sessionUserID] } }
+                    ]
+                }
+            ]
+        })
 
         if (validateChat) {
 
@@ -25,7 +34,16 @@ router.post('/fetch-chat', fetchUser, async (req, res) => {
 
             await newChat.save()
 
-            const chat = await Chat.findOne({ user: [sessionUserID, userID] })
+            const chat = await Chat.findOne({
+                $and: [
+                    {
+                        $or: [
+                            { user: { $all: [sessionUserID, userID] } },
+                            { user: { $all: [userID, sessionUserID] } }
+                        ]
+                    }
+                ]
+            })
 
             res.send({ success: true, chatData: chat })
 
@@ -57,7 +75,7 @@ router.post('/fetch-all-chat', fetchUser, async (req, res) => {
     }
 
 })
- 
+
 
 router.post('/send-message', fetchUser, async (req, res) => {
 
