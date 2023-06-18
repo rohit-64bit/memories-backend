@@ -99,7 +99,39 @@ router.post('/delete', fetchUser, async (req, res) => {
 
     try {
 
+        const sessionUserID = req.user.id
+
+        const { commentID } = req.body
+
         const commentDeleteScore = 5;
+
+        const validateComment = await Comment.findById(commentID)
+
+
+        if (!validateComment) {
+            return res.send({ error: "Comment not found" })
+        }
+
+        if (sessionUserID == validateComment.userID) {
+
+            const post = await Post.findById(validateComment.postID)
+
+            await Comment.findByIdAndDelete(commentID)
+
+            post.engagementScore = post.engagementScore - commentDeleteScore
+
+            await post.save()
+
+            return res.send({
+                success: true,
+                message: "Comment Deleted"
+            })
+
+        } else {
+            return res.send({
+                error: "You cannot delete this comment"
+            })
+        }
 
     } catch (error) {
         console.log(error.message);

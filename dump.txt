@@ -1,6 +1,0 @@
-user-auth-token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjQzMDZmZWZkZGIzYWZmMjc4OGYxNjZlIn0sImlhdCI6MTY4MTM3NzkxNX0.T5gEDuxrkdwDHSFR4mofhou31I1JN8F4JUuS2lUg4xI
-
-{
-  "success": true,
-  "authToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbiI6eyJpZCI6IjY0MzU5NWRkY2IxMjhkYzRjODNkYTIxNCJ9LCJpYXQiOjE2ODEzNzgxMDF9.ZRgRfnr1rr2zX0OZbxYTYiEUXe869hSPMsXpSFVFojE"
-}
