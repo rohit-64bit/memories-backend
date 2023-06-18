@@ -32,7 +32,7 @@ router.post('/createuser', [
 
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
+        return res.status(400).json({ error: "Fill form properly" });
     }
 
     try {
@@ -67,9 +67,9 @@ router.post('/createuser', [
 
         const authToken = jwt.sign(data, jwtSecret);
 
-        const otpValidate = await Otp.find({ "userID": data.userData.id })
+        const otpValidate = await Otp.findOne({ "userID": data.userData.id, type: "auth", verifiedStatus: false })
 
-        if (!otpValidate) {
+        if (otpValidate) {
             return res.send({ "error": "otp already exists" })
         }
 
@@ -79,8 +79,7 @@ router.post('/createuser', [
             "type": "auth"
         })
 
-        generateOTP.save()
-
+        await generateOTP.save()
 
         const client = nodemailer.createTransport({
             service: "Gmail",
@@ -168,7 +167,7 @@ router.post('/authuser', [
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
-        return res.json({ errors: errors.array() })
+        return res.json({ error: "Fill form properly" })
     }
 
     const { email, password } = req.body;
