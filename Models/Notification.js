@@ -11,6 +11,10 @@ const NotificationSchema = new Schema({
     interaction: {
         type: Boolean
     },
+    postID: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'post'
+    },
     userID: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'user',

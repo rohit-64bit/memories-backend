@@ -6,8 +6,7 @@ const MessageSchema = new Schema({
 
     date: {
         type: Date,
-        default: Date.now,
-        index: { expires: '7d' }
+        default: Date.now
     },
     chatID: {
         type: mongoose.Schema.Types.ObjectId,

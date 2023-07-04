@@ -71,7 +71,8 @@ router.post('/like-dislike', fetchUser, async (req, res) => {
                 "interaction": true,
                 "userID": postData.userID,
                 "userInteracted": sessionUserID,
-                "notificationText": "commented on your post."
+                "notificationText": "commented on your post.",
+                postID: postData._id
 
             })
 
@@ -82,15 +83,18 @@ router.post('/like-dislike', fetchUser, async (req, res) => {
 
         await postData.save()
 
-        const notification = Notification({
+        if (postData.userID != sessionUserID) {
 
-            "interaction": true,
-            "userID": postData.userID,
-            "userInteracted": sessionUserID,
-            "notificationText": "liked your post."
+            const notification = Notification({
 
-        })
+                "interaction": true,
+                "userID": postData.userID,
+                "userInteracted": sessionUserID,
+                "notificationText": "liked your post."
 
+            })
+
+        }
         await notification.save()
 
         res.send({

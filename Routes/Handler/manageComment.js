@@ -50,8 +50,8 @@ router.post('/create', fetchUser, async (req, res) => {
                 "interaction": true,
                 "userID": postData.userID,
                 "userInteracted": sessionUserID,
-                "notificationText": "commented on your post."
-
+                "notificationText": "commented on your post.",
+                postID: postData._id
             })
 
             await notification.save()

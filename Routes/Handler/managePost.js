@@ -3,6 +3,7 @@ const router = express.Router();
 const fetchAdmin = require('../../Middleware/fetchAdmin');
 const fetchUser = require('../../Middleware/fetchUser');
 const Post = require('../../Models/Post');
+const Follow = require('../../Models/Follow');
 const BlackList = require('../../Models/BlackList');
 const Notification = require('../../Models/Notification');
 
@@ -93,6 +94,7 @@ router.post('/fetch-all-post-user/:page', fetchUser, async (req, res) => {
         const daysAgo = new Date(today.getTime() - (3 * 24 * 60 * 60 * 1000));
 
         // const allPost = await Post.find({ "postType": "public", date: { $gte: daysAgo } }).sort({ engagementScore: -1, date: -1 }).skip(offset).limit(limit).exec()
+
         const allPost = await Post.find({ "postType": "public" }).sort({ date: -1 }).skip(offset).limit(limit).exec()
 
         const allPostLength = await Post.find({ "postType": "public" })
@@ -103,6 +105,59 @@ router.post('/fetch-all-post-user/:page', fetchUser, async (req, res) => {
     } catch (error) {
         console.log(error.message);
         res.send({ "error": "Internal Server Error" })
+    }
+
+})
+
+router.post('/fetch-recommended-post/:page', fetchUser, async (req, res) => {
+
+    try {
+
+        const pageNumber = Number(req.params.page);
+
+        const pageSize = 5;
+
+        const sessionUserID = req.user.id;
+
+        const followedUserList = await Follow.find({ userID: sessionUserID })
+
+        const followedUserIds = followedUserList.map((data => data.following))
+
+        // Fetch the posts of the followed users and sort by date
+        const posts = await Post.find({ userID: { $in: followedUserIds }, postType: "public" }).sort({ date: -1 });
+
+        // Fetch the rest of the post data
+        const restOfThePosts = await Post.find({ userID: { $nin: followedUserIds }, postType: "public" }).sort({ date: -1 });
+
+        // Combine the fetched posts and rest of the posts
+        const allPosts = [...posts, ...restOfThePosts];
+
+        // Paginate the allPosts array
+        const totalPosts = allPosts.length;
+        const startIndex = (pageNumber - 1) * pageSize;
+        const endIndex = startIndex + pageSize;
+        const totalPages = Math.ceil(totalPosts / pageSize);
+        const paginatedPosts = allPosts.slice(startIndex, endIndex);
+
+        console.log('followedUserList', followedUserList)
+
+        console.log('--------------------------------------------------------------')
+
+        console.log('followedUserIds', followedUserIds)
+
+        console.log('--------------------------------------------------------------')
+
+        console.log('post', posts)
+
+        console.log('--------------------------------------------------------------')
+
+        console.log('restOfThePosts', restOfThePosts)
+
+        res.json({ "allPost": paginatedPosts, "allPostLength": totalPosts })
+
+    } catch (error) {
+        console.log(error)
+        res.send({ error: "Internal Server Error" })
     }
 
 })
