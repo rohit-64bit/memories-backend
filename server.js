@@ -15,10 +15,7 @@ const socketPort = 9000;
 
 const server = require('http').createServer(app);
 
-const allowedOrigin = [
-    `${env.CLIENT_URL}`,
-    `${env.PERMANENT_CLIENT_URL}`
-]
+const allowedOrigin = `${env.CLIENT_URL}`
 
 app.use(cors({ origin: allowedOrigin }))
 
