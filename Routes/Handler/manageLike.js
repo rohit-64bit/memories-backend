@@ -94,8 +94,9 @@ router.post('/like-dislike', fetchUser, async (req, res) => {
 
             })
 
+            await notification.save()
+
         }
-        await notification.save()
 
         res.send({
             "success": true,

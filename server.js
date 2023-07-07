@@ -11,13 +11,11 @@ connectToMongo()
 const app = express();
 const port = process.env.PORT || 8888;
 
-const socketPort = 9000;
-
 const server = require('http').createServer(app);
 
 const allowedOrigin = [`${env.CLIENT_URL}`, `${env.ADMIN_CLIENT_URL}`]
 
-app.use(cors({ origin: allowedOrigin }))
+app.use(cors({ origin: "*" }))
 
 app.use(express.json())
 
@@ -77,7 +75,7 @@ app.get('/', (req, res) => {
 
 const io = new Server(server, {
     cors: {
-        origin: `${env.CLIENT_URL}`,
+        origin: "*",
     }
 });
 
