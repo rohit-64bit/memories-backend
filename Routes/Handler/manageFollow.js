@@ -4,6 +4,7 @@ const fetchUser = require('../../Middleware/fetchUser');
 const Follow = require('../../Models/Follow');
 const BlackList = require('../../Models/BlackList');
 const Notification = require('../../Models/Notification');
+const User = require('../../Models/User');
 
 
 router.post('/follow-unfollow', fetchUser, async (req, res) => {
@@ -136,6 +137,55 @@ router.post('/fetch-following/:page', fetchUser, async (req, res) => {
         console.log(error.message);
         res.send({ "error": "Internal Server Error" })
     }
+})
+
+router.post('/fetch-mutual-follow', fetchUser, async (req, res) => {
+
+    try {
+
+        const sessionUserID = req.user.id
+
+        const sessionUserFollowing = await Follow.find({ userID: sessionUserID }).exec()
+
+        const sessionUserFollowingID = sessionUserFollowing.map((data) => data.following._id)
+
+        const uniqueFollowers = await Follow.find({
+            $and: [
+                { userID: { $nin: sessionUserID } },
+                { userID: { $in: sessionUserFollowingID } },
+                { following: { $nin: sessionUserID } },
+                { following: { $nin: sessionUserFollowingID } }
+            ]
+        }).sort({ _id: -1 })
+
+        const uniqueFollowersID = uniqueFollowers.map(data => data.following)
+
+        const uniqueFollowersList = await User.find({ _id: { $in: uniqueFollowersID } }).select('-password')
+
+        if (uniqueFollowersList.length) {
+
+            res.json(uniqueFollowersList.slice(0, 6))
+
+        } else {
+
+            const userList = await User.find({
+                $and: [
+                    { _id: { $nin: sessionUserID } },
+                    { _id: { $nin: sessionUserFollowingID } }
+                ],
+                isAuth: true
+            }).select('-password')
+
+            res.json(userList.slice(0, 6))
+
+        }
+
+
+    } catch (error) {
+        console.log(error)
+        res.json({ error: 'Internal Server Error' })
+    }
+
 })
 
 
