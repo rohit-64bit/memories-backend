@@ -174,7 +174,7 @@ router.post('/fetch-mutual-follow', fetchUser, async (req, res) => {
                     { _id: { $nin: sessionUserFollowingID } }
                 ],
                 isAuth: true
-            }).select('-password')
+            }).sort({ _id: -1 }).select('-password')
 
             res.json(userList.slice(0, 6))
 
