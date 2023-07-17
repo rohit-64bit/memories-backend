@@ -10,7 +10,7 @@ router.post('/get-user-profile', fetchUser, async (req, res) => {
 
         const userID = req.user.id
 
-        const user = await User.findById(userID)
+        const user = await User.findById(userID).select('-password')
 
         if (user.isPartner) {
 

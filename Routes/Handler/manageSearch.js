@@ -21,7 +21,7 @@ router.post('/search-community/:regex', fetchUser, async (req, res) => {
             ],
             isAuth: true
 
-        }).sort({ _id: -1 }).exec()
+        }).sort({ _id: -1 }).select('-password').exec()
 
         const success = true
 
