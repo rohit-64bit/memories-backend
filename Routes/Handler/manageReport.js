@@ -4,6 +4,7 @@ const router = express.Router();
 const Post = require('../../Models/Post');
 const Report = require('../../Models/Report');
 const SupportReport = require('../../Models/SupportReport');
+const fetchAdmin = require('../../Middleware/fetchAdmin');
 
 router.post('/post-report', fetchUser, async (req, res) => {
 
@@ -32,6 +33,21 @@ router.post('/post-report', fetchUser, async (req, res) => {
     } catch (error) {
         console.log(error.message)
         res.send({ error: "Internal Server Error" })
+    }
+
+})
+
+router.post('/admin/fetch-post-report', fetchAdmin, async (req, res) => {
+
+    try {
+
+        const data = await Report.find().sort({ _id: -1 })
+
+        res.json({ success: true, data })
+
+    } catch (error) {
+        console.log(error)
+        res.json({ error: "Internal Server Error" })
     }
 
 })
